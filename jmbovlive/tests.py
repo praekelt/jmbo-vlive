@@ -4,7 +4,8 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'jmbovlive.settings'
 from django.test import TestCase
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.http import QueryDict
-from jmbovlive.middleware import PMLFormActionMiddleware, ModifyPMLResponseMiddleware
+from jmbovlive.middleware import (PMLFormActionMiddleware, ModifyPMLResponseMiddleware,
+                                  VodafoneLiveInfoMiddleware)
 
 class TestCase(TestCase):
     
@@ -39,4 +40,15 @@ class TestCase(TestCase):
         self.assertContains(response, '<TIMER href="/home/')
         self.assertContains(response, 'Please wait while we automatically redirect you.')
         
+    def test_vlive_headers_middleware(self):
+        request = HttpRequest()
+        request.method = 'GET'
+        request.META = {'HTTP_X_UP_CALLING_LINE_ID': '0123456789',
+                        'HTTP_X_VODAFONE_AREA': 'south'}
+        
+        middleware = VodafoneLiveInfoMiddleware()
+        middleware.process_request(request)
+        
+        self.assertEqual(request.vlive.msisdn, '0123456789')
+        self.assertEqual(request.vlive.area, 'south')
 
