@@ -47,9 +47,3 @@ class VodafoneLiveInfoMiddleware(object):
         vlive.msisdn = request.META.get('HTTP_X_UP_CALLING_LINE_ID', 'unknown')
         vlive.area = request.META.get('HTTP_X_VODAFONE_AREA', 'unknown')
         request.vlive = vlive
-        
-        if request.session.get(settings.UMMELI_PIN_SESSION_KEY):
-            request.is_authorized = True
-        else:
-            request.is_authorized = False
-
