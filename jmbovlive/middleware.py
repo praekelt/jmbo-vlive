@@ -2,6 +2,7 @@ from jmbovlive.utils import pml_redirect_timer_view
 from django.contrib.auth.middleware import RemoteUserMiddleware
 from django.conf import settings
 
+
 class PMLFormActionMiddleware(object):
     """
     Friendlier access to device / request info that Vodafone Live makes
@@ -21,8 +22,8 @@ class ModifyPMLResponseMiddleware(object):
         if (msisdn != None):
             if response.status_code == 301 or response.status_code == 302:
                 return pml_redirect_timer_view(request, response['Location'],
-                    redirect_time = 0,
-                    redirect_message = 'Submitted successfully.')
+                    redirect_time=0,
+                    redirect_message='Submitted successfully.')
 
             if hasattr(settings, 'PML_IGNORE_PATH'):
                 exclude = [p for p in settings.PML_IGNORE_PATH\
@@ -31,7 +32,6 @@ class ModifyPMLResponseMiddleware(object):
                     return response
 
             response['Content-type'] = 'text/xml'
-        print response
         return response
 
 
