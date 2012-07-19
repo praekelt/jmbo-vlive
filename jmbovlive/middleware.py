@@ -4,12 +4,12 @@ from django.conf import settings
 
 class PMLFormActionMiddleware(object):
     """
-    Friendlier access to device / request info that Vodafone Live makes 
+    Friendlier access to device / request info that Vodafone Live makes
     available to us via HTTP Headers
     """
     def process_request(self, request):
         msisdn = request.META.get('HTTP_X_UP_CALLING_LINE_ID', None)
-        
+
         if (request.GET.get('_action',  None) == 'POST' and msisdn != None):
             request.method = "POST"
             request.POST = request.GET
@@ -23,9 +23,15 @@ class ModifyPMLResponseMiddleware(object):
                 return pml_redirect_timer_view(request, response['Location'],
                     redirect_time = 0,
                     redirect_message = 'Submitted successfully.')
-            
+
+            if hasattr(settings, 'PML_IGNORE_PATH'):
+                exclude = [p for p in settings.PML_IGNORE_PATH\
+                            if request.path.startswith('/vlive/downloads/')]
+                if exclude:
+                    return response
+
             response['Content-type'] = 'text/xml'
-        
+        print response
         return response
 
 
@@ -33,13 +39,13 @@ class VodafoneLiveUserMiddleware(RemoteUserMiddleware):
     header = 'HTTP_X_UP_CALLING_LINE_ID'
 
 
-class VodafoneLiveInfo(object): 
+class VodafoneLiveInfo(object):
     pass
 
 
 class VodafoneLiveInfoMiddleware(object):
     """
-    Friendlier access to device / request info that Vodafone Live makes 
+    Friendlier access to device / request info that Vodafone Live makes
     available to us via HTTP Headers
     """
     def process_request(self, request):
