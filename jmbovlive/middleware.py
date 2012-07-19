@@ -27,8 +27,8 @@ class ModifyPMLResponseMiddleware(object):
 
             if hasattr(settings, 'PML_IGNORE_PATH'):
                 exclude = [p for p in settings.PML_IGNORE_PATH\
-                            if request.path.startswith('/vlive/downloads/')]
-                if exclude:
+                            if request.path.startswith(p)]
+                if any(exclude):
                     return response
 
             response['Content-type'] = 'text/xml'
