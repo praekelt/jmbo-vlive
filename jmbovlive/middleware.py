@@ -1,4 +1,5 @@
 from jmbovlive.utils import pml_redirect_timer_view
+from jmbovlive.google_analytics import google_analytics
 from django.contrib.auth.middleware import RemoteUserMiddleware
 from django.conf import settings
 
@@ -14,6 +15,11 @@ class PMLFormActionMiddleware(object):
         if (request.GET.get('_action',  None) == 'POST' and msisdn != None):
             request.method = "POST"
             request.POST = request.GET
+
+
+class GoogleAnalyticsMiddleware(object):
+    def process_response(self, request,  response):
+        return google_analytics(request, response)
 
 
 class ModifyPMLResponseMiddleware(object):
