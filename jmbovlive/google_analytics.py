@@ -64,10 +64,7 @@ def google_analytics(request, response):
     path = request.path
     meta = request.META
 
-    try:
-        account = settings.JMBO_ANALYTICS['google_analytics_id']
-    except:
-        raise Exception("No Google Analytics ID configured")
+    account = settings.JMBO_ANALYTICS['google_analytics_id']
 
     """Sends a request to google analytics."""
     meta = request.META
