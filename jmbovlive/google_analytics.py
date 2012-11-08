@@ -3,22 +3,11 @@ import uuid
 import random
 import urllib
 import httplib2
-import re
 from hashlib import md5
 from django.conf import settings
 
 from jmbo_analytics import CAMPAIGN_TRACKING_PARAMS
 from celery.task import task
-
-
-def get_ip(remote_address):
-    if not remote_address:
-        return ''
-    matches = re.match('^([^.]+\.[^.]+\.[^.]+\.).*', remote_address)
-    if matches:
-        return matches.groups()[0] + "0"
-    else:
-        return ''
 
 
 def get_visitor_id(guid, account, user_agent, cookie):
